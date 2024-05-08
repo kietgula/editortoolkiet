@@ -8,7 +8,7 @@ using Object = System.Object;
 
 public class RoadMaker : EditorWindow
 {
-    [MenuItem("Window/RoadMaker")]
+    [MenuItem("Tools/RoadMaker")]
     public static void ShowWindow()
     {
         RoadMaker wnd = GetWindow<RoadMaker>();
