@@ -1,0 +1,65 @@
+using UnityEngine;
+using UnityEditor;
+
+[CanEditMultipleObjects]
+[CustomEditor(typeof(Transform), true)]
+public class CustomTransformInspector : Editor
+{
+    SerializedProperty mPos;
+    SerializedProperty mRot;
+    SerializedProperty mScale;
+
+    void OnEnable()
+    {
+        mPos = serializedObject.FindProperty("m_LocalPosition");
+        mRot = serializedObject.FindProperty("m_LocalRotation");
+        mScale = serializedObject.FindProperty("m_LocalScale");
+    }
+
+    public override void OnInspectorGUI()
+    {
+        serializedObject.Update();
+
+        DrawPosition();
+        DrawRotation();
+        DrawScale();
+
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    void DrawPosition()
+    {
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("P", GUILayout.Width(20f)))
+        {
+            mPos.vector3Value = Vector3.zero;
+        }
+        EditorGUILayout.PropertyField(mPos);
+        GUILayout.EndHorizontal();
+    }
+
+    void DrawScale()
+    {
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("S", GUILayout.Width(20f)))
+        {
+            mScale.vector3Value = Vector3.one;
+        }
+        EditorGUILayout.PropertyField(mScale);
+        GUILayout.EndHorizontal();
+    }
+
+    void DrawRotation()
+    {
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("R", GUILayout.Width(20f)))
+        {
+            mRot.quaternionValue = Quaternion.identity;
+        }
+
+        Vector3 eulerRotation = mRot.quaternionValue.eulerAngles;
+        eulerRotation = EditorGUILayout.Vector3Field("Rotation", eulerRotation);
+        mRot.quaternionValue = Quaternion.Euler(eulerRotation);
+        GUILayout.EndHorizontal();
+    }
+}
