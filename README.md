@@ -22,4 +22,10 @@ This tool allows you to shift a number of GameObjects by a specific value.
 
 ![](positionshifter.gif)
 
+## 5. CenterMeshPivotTool
+
+This tool help you to recenter the pivot of a Mesh.
+
+![](CenterMeshPivotTool.gif)
+
 
