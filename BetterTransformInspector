@@ -32,9 +32,14 @@ public class CustomTransformInspector : Editor
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("P", GUILayout.Width(20f)))
         {
-            mPos.vector3Value = Vector3.zero;
+            Undo.RecordObjects(targets, "Reset Position");
+            foreach (Transform t in targets)
+            {
+                t.localPosition = Vector3.zero;
+            }
+            serializedObject.Update();
         }
-        EditorGUILayout.PropertyField(mPos);
+        EditorGUILayout.PropertyField(mPos, new GUIContent("Position"));
         GUILayout.EndHorizontal();
     }
 
@@ -43,9 +48,14 @@ public class CustomTransformInspector : Editor
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("S", GUILayout.Width(20f)))
         {
-            mScale.vector3Value = Vector3.one;
+            Undo.RecordObjects(targets, "Reset Scale");
+            foreach (Transform t in targets)
+            {
+                t.localScale = Vector3.one;
+            }
+            serializedObject.Update();
         }
-        EditorGUILayout.PropertyField(mScale);
+        EditorGUILayout.PropertyField(mScale, new GUIContent("Scale"));
         GUILayout.EndHorizontal();
     }
 
@@ -54,12 +64,27 @@ public class CustomTransformInspector : Editor
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("R", GUILayout.Width(20f)))
         {
-            mRot.quaternionValue = Quaternion.identity;
+            Undo.RecordObjects(targets, "Reset Rotation");
+            foreach (Transform t in targets)
+            {
+                t.localRotation = Quaternion.identity;
+            }
+            serializedObject.Update();
         }
 
-        Vector3 eulerRotation = mRot.quaternionValue.eulerAngles;
-        eulerRotation = EditorGUILayout.Vector3Field("Rotation", eulerRotation);
-        mRot.quaternionValue = Quaternion.Euler(eulerRotation);
+        EditorGUI.BeginChangeCheck();
+        Vector3 currentEuler = TransformUtils.GetInspectorRotation((Transform)target);
+        Vector3 newEuler = EditorGUILayout.Vector3Field(new GUIContent("Rotation"), currentEuler);
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObjects(targets, "Change Rotation");
+            foreach (Transform t in targets)
+            {
+                TransformUtils.SetInspectorRotation(t, newEuler);
+            }
+            serializedObject.Update();
+        }
         GUILayout.EndHorizontal();
     }
 }
