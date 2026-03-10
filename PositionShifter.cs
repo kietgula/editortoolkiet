@@ -26,6 +26,7 @@ public class PositionShifter: EditorWindow
         {
             foreach (GameObject go in Selection.gameObjects)
             {
+                Undo.RecordObject(go.transform, "Shifting GameObjects");
                 go.transform.localPosition += _shiftAmount;
             }
         }
